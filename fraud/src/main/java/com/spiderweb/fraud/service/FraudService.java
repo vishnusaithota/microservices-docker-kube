@@ -5,6 +5,7 @@ import com.spiderweb.fraud.repository.FraudRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class FraudService {
@@ -16,16 +17,22 @@ public class FraudService {
     }
 
     public Boolean checkFraudster(Integer customerId) {
-        FraudCheckHistory fraudCheckHistory = fraudRepository.findByCustomerId(customerId);
-        if (fraudCheckHistory == null){
-            fraudRepository.save(FraudCheckHistory.builder()
-                    .isFraudster(false)
-                    .lastChecked(LocalDateTime.now())
-                    .customerId(customerId).build());
-            return false;
-//            throw new IllegalArgumentException("The CustomerId doesn't exit");
-        }
+        Optional<FraudCheckHistory> fraudCheckHistory = fraudRepository.findByCustomerId(customerId);
+        Boolean isFraudster;
+        isFraudster = fraudCheckHistory.map(FraudCheckHistory::getIsFraudster)
+                .orElseGet(() -> {
+                    saveNewFraudCheckEntry(customerId);
+                    return false;
+                });
 
-        return fraudCheckHistory.getIsFraudster();
+        return isFraudster;
+    }
+
+    private void saveNewFraudCheckEntry(Integer customerId) {
+        FraudCheckHistory fraudCheckHistory = FraudCheckHistory
+                .builder().customerId(customerId)
+                .isFraudster(false)
+                .lastChecked(LocalDateTime.now())
+                .build();
     }
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface FraudRepository
         extends JpaRepository<FraudCheckHistory, Integer> {
-    FraudCheckHistory findByCustomerId(Integer customerId);
+    Optional<FraudCheckHistory> findByCustomerId(Integer customerId);
 }
