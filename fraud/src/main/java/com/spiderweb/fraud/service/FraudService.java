@@ -18,14 +18,13 @@ public class FraudService {
 
     public Boolean checkFraudster(Integer customerId) {
         Optional<FraudCheckHistory> fraudCheckHistory = fraudRepository.findByCustomerId(customerId);
-        Boolean isFraudster;
-        isFraudster = fraudCheckHistory.map(FraudCheckHistory::getIsFraudster)
-                .orElseGet(() -> {
-                    saveNewFraudCheckEntry(customerId);
-                    return false;
-                });
 
-        return isFraudster;
+        if (fraudCheckHistory.isEmpty()){
+            saveNewFraudCheckEntry(customerId);
+            return false;
+        }
+
+        return fraudCheckHistory.get().getIsFraudster();
     }
 
     private void saveNewFraudCheckEntry(Integer customerId) {
