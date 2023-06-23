@@ -34,7 +34,6 @@ public class CustomerService {
 
 
 //        check if email is valid
-        CustomerUtils.validateFields(customer);
 //        check if email is not taken
         checkIfEmailIsTaken(customer.getEmail());
 

@@ -1,14 +1,14 @@
 version: '3.8'
 services:
   postgres:
-    container_name: postgres
+    container_name: postgres-customer
     image: postgres
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
     volumes:
-      - postgres:/data/postgres
+      - postgres-customer:/data/postgres
     ports:
       - "5432:5432"
     networks:
@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
     volumes:
-      - postgres:/data/postgres
+      - postgres-fraud:/data/postgres
     ports:
       - "5431:5432"
     networks:
@@ -51,4 +51,5 @@ networks:
 
 volumes:
   pgadmin:
-  postgres:
+  postgres-customer:
+  postgres-fraud:
