@@ -18,21 +18,21 @@ public class FraudApplication {
         SpringApplication.run(FraudApplication.class,args);
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner(FraudRepository fraudRepository){
-        return args -> {
-            FraudCheckHistory fraudCheckHistory1 = FraudCheckHistory
-                    .builder().customerId(1)
-                    .isFraudster(false)
-                    .lastChecked(LocalDateTime.now()).build();
-
-            FraudCheckHistory fraudCheckHistory2 = FraudCheckHistory
-                    .builder().customerId(2)
-                    .isFraudster(true)
-                    .lastChecked(LocalDateTime.now()).build();
-
-            fraudRepository.save(fraudCheckHistory1);
-            fraudRepository.save(fraudCheckHistory2);
-        };
-    }
+//    @Bean
+//    public CommandLineRunner commandLineRunner(FraudRepository fraudRepository){
+//        return args -> {
+//            FraudCheckHistory fraudCheckHistory1 = FraudCheckHistory
+//                    .builder().customerId(1)
+//                    .isFraudster(false)
+//                    .lastChecked(LocalDateTime.now()).build();
+//
+//            FraudCheckHistory fraudCheckHistory2 = FraudCheckHistory
+//                    .builder().customerId(2)
+//                    .isFraudster(true)
+//                    .lastChecked(LocalDateTime.now()).build();
+//
+//            fraudRepository.save(fraudCheckHistory1);
+//            fraudRepository.save(fraudCheckHistory2);
+//        };
+//    }
 }

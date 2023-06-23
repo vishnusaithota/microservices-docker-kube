@@ -33,5 +33,6 @@ public class FraudService {
                 .isFraudster(false)
                 .lastChecked(LocalDateTime.now())
                 .build();
+        fraudRepository.save(fraudCheckHistory);
     }
 }
