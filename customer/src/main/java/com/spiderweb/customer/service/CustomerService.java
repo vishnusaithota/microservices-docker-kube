@@ -1,11 +1,12 @@
 package com.spiderweb.customer.service;
 
+
+import com.spiderweb.clients.fraud.FraudCheckResponse;
+import com.spiderweb.clients.fraud.FraudClient;
 import com.spiderweb.customer.dto.CustomerRequest;
 import com.spiderweb.customer.exception.EmailTakenException;
 import com.spiderweb.customer.model.Customer;
 import com.spiderweb.customer.repository.CustomerRepository;
-import com.spiderweb.customer.dto.FraudCheckResponse;
-import com.spiderweb.customer.utils.CustomerUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -19,9 +20,12 @@ public class CustomerService {
 
     private final RestTemplate restTemplate;
 
-    public CustomerService(CustomerRepository customerRepository, RestTemplate restTemplate) {
+    private final FraudClient fraudClient;
+
+    public CustomerService(CustomerRepository customerRepository, RestTemplate restTemplate, FraudClient fraudClient) {
         this.customerRepository = customerRepository;
         this.restTemplate = restTemplate;
+        this.fraudClient = fraudClient;
     }
 
     @Transactional
@@ -32,17 +36,17 @@ public class CustomerService {
                 .email(customerRequest.email())
                 .build();
 
-
-//        check if email is valid
-//        check if email is not taken
         checkIfEmailIsTaken(customer.getEmail());
 
         customerRepository.saveAndFlush(customer);
-//        Check if fraudster
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-                "http://FRAUD/api/v1/fraud/{customerId}",
-                FraudCheckResponse.class, customer.getId()
-        );
+//        Check if fraudster using restTemplate
+//        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
+//                "http://FRAUD/api/v1/fraud/{customerId}",
+//                FraudCheckResponse.class, customer.getId()
+//        );
+
+        FraudCheckResponse fraudCheckResponse =
+                fraudClient.checkFraudster(customer.getId());
 
         assert fraudCheckResponse != null;
         if (fraudCheckResponse.isFraudster()) {

@@ -1,6 +1,6 @@
 package com.spiderweb.fraud.controller;
 
-import com.spiderweb.fraud.dto.FraudCheckResponse;
+import com.spiderweb.clients.fraud.FraudCheckResponse;
 import com.spiderweb.fraud.service.FraudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
