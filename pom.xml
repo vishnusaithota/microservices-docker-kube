@@ -14,6 +14,7 @@
     <module>eureka-server</module>
       <module>clients</module>
       <module>notification</module>
+    <module>apigw</module>
   </modules>
 
   <name>microservices</name>
@@ -58,6 +59,10 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-sleuth-zipkin</artifactId>
     </dependency>
   </dependencies>
 
