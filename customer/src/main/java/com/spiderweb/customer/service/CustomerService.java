@@ -1,6 +1,7 @@
 package com.spiderweb.customer.service;
 
 
+import com.spiderweb.amqp.RabbitMQMessageProducer;
 import com.spiderweb.clients.fraud.FraudCheckResponse;
 import com.spiderweb.clients.fraud.FraudClient;
 import com.spiderweb.clients.notification.NotificationClient;
@@ -19,18 +20,18 @@ import java.util.Optional;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-
     private final RestTemplate restTemplate;
-
     private final FraudClient fraudClient;
-
     private final NotificationClient notificationClient;
 
-    public CustomerService(CustomerRepository customerRepository, RestTemplate restTemplate, FraudClient fraudClient, NotificationClient notificationClient) {
+    private final RabbitMQMessageProducer rabbitMQMessageProducer;
+
+    public CustomerService(CustomerRepository customerRepository, RestTemplate restTemplate, FraudClient fraudClient, NotificationClient notificationClient, RabbitMQMessageProducer rabbitMQMessageProducer) {
         this.customerRepository = customerRepository;
         this.restTemplate = restTemplate;
         this.fraudClient = fraudClient;
         this.notificationClient = notificationClient;
+        this.rabbitMQMessageProducer = rabbitMQMessageProducer;
     }
 
     @Transactional
@@ -53,24 +54,25 @@ public class CustomerService {
         FraudCheckResponse fraudCheckResponse =
                 fraudClient.checkFraudster(customer.getId());
 
-//        assert fraudCheckResponse != null;
         if (fraudCheckResponse.isFraudster()) {
             throw new IllegalStateException("Fraudster");
-        }else {
-           buildAndSendNotification(customer);
         }
 
-    }
-
-    private void buildAndSendNotification(Customer customer) {
         NotificationRequest notificationRequest = new NotificationRequest(
                 customer.getId(),
                 customer.getEmail(),
-                "Thanks For Registering"
+                String.format("Hi %s, welcome to Spiderweb...",
+                        customer.getFirstName())
         );
 
-        notificationClient.sendNotification(notificationRequest);
+        rabbitMQMessageProducer.publish(
+                notificationRequest,
+                "internal.exchange",
+                "internal.notification.routing-key");
+
     }
+
+
 
     private void checkIfEmailIsTaken(String email) {
         Optional<Customer> customerOptional = customerRepository
