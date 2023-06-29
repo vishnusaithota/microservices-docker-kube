@@ -6,7 +6,7 @@ spring:
     name: fraud
   datasource:
     password: password
-    url: jdbc:postgresql://postgres-fraud:5431/fraud
+    url: jdbc:postgresql://postgres-fraud:5432/fraud
     username: root
   jpa:
     hibernate:

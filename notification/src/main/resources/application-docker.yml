@@ -6,7 +6,7 @@ spring:
     name: notification
   datasource:
     password: password
-    url: jdbc:postgresql://postgres-notification:5430/notification
+    url: jdbc:postgresql://postgres-notification:5432/notification
     username: root
   jpa:
     hibernate:
@@ -19,7 +19,7 @@ spring:
   zipkin:
     base-url: http://zipkin:9411
   rabbitmq:
-    addresses: localhost:5672
+    addresses: rabbitmq:5672
 
 eureka:
   client:
