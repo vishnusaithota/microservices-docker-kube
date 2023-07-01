@@ -6,14 +6,16 @@ metadata:
     type: local
     app: postgres
 spec:
-  storageClassName: manual
+  storageClassName: manual  # Add this line to specify the storage class
   capacity:
     storage: 5Gi
   accessModes:
     - ReadWriteMany
   hostPath:
     path: /mnt/data
+
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -21,7 +23,7 @@ metadata:
   labels:
     app: postgres
 spec:
-  storageClassName: manual
+  storageClassName: manual  # Add this line to specify the storage class
   accessModes:
     - ReadWriteMany
   resources:
