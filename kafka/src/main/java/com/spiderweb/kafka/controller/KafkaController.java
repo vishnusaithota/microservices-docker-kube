@@ -14,16 +14,16 @@ import java.time.LocalDateTime;
 @RequestMapping("api/v1/kafka")
 public class KafkaController {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Message> kafkaTemplate;
 
 
-    public KafkaController(KafkaTemplate<String, String> kafkaTemplate) {
+    public KafkaController(KafkaTemplate<String, Message> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     @PostMapping()
     public void sendMessage(@RequestBody MessageRequest messageRequest) {
-        new Message(messageRequest.message(), LocalDateTime.now());
-        kafkaTemplate.send("spiderweb2.0", messageRequest.message());
+        Message messageObject = new Message(messageRequest.message(), LocalDateTime.now());
+        kafkaTemplate.send("spiderweb2.0", messageObject );
     }
 }
