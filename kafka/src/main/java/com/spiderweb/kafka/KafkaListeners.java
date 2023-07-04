@@ -12,6 +12,6 @@ public class KafkaListeners {
 //    Facing Issue to deserialize the customObject
     @KafkaListener(topics = "spiderweb2.0", groupId = "hello")
     void Listener( String data){
-        System.out.println("Listener received : " + data);
+        System.out.println("Listener received : " + data.toString());
     }
 }
