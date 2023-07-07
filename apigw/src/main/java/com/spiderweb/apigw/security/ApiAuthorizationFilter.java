@@ -1,6 +1,8 @@
 package com.spiderweb.apigw.security;
 
 import com.spiderweb.apigw.ApiGWApplication;
+import com.spiderweb.apigw.FakeApiAuthorizationChecker;
+import lombok.AllArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -15,7 +17,10 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class ApiAuthorizationFilter implements GlobalFilter, Ordered {
+
+    private final FakeApiAuthorizationChecker fakeApiAuthorizationChecker;
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
@@ -24,10 +29,12 @@ public class ApiAuthorizationFilter implements GlobalFilter, Ordered {
         Route attribute =  exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
        String application = attribute.getId();
         List<String> apiKey = exchange.getRequest().getHeaders().get("ApiKey");
-        if (application == null || (apiKey == null || apiKey.isEmpty())) {
+        if (application == null ||
+                (apiKey == null || apiKey.isEmpty()) ||
+                !fakeApiAuthorizationChecker.isAuthorized(apiKey.get(0), application)) {
            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Sorry You are not authorized");
        }
-        System.out.println(apiKey.get(0));
+
         return chain.filter(exchange);
     }
 
