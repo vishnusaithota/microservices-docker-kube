@@ -17,6 +17,7 @@
     <module>apigw</module>
       <module>amqp</module>
       <module>kafka</module>
+      <module>security-checker</module>
   </modules>
 
   <name>microservices</name>
